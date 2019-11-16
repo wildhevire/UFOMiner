@@ -4,8 +4,8 @@ using UnityEngine;
 
 public class PickupsHandler : MonoBehaviour
 {
+
     
-    Scores score;
     // Start is called before the first frame update
     void Start()
     {
@@ -21,9 +21,12 @@ public class PickupsHandler : MonoBehaviour
     private void OnTriggerEnter2D(Collider2D collision)
     {
         if (collision.tag == "Player") {
-            score.Player += 1;
-            Debug.Log(score.Player);
+            Scores.Player += 1;
+            PickupsSpawner.pickUpCount -= 1;
+            Debug.Log(Scores.Player);
             Destroy(gameObject);
+            
         }
+       
     }
 }

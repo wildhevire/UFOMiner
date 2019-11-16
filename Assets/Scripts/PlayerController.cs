@@ -4,11 +4,13 @@ using UnityEngine;
 
 public class PlayerController : MonoBehaviour
 {
-    Vector2 origin, target;
+    Vector2 origin,target,pivot;
     float distance;
-    public float maxForce = 5;
-    public float Force = 5;
+    public float maxForce = 10;
+
     Rigidbody2D rigid;
+
+    
     // Start is called before the first frame update
     void Start()
     {
@@ -18,40 +20,52 @@ public class PlayerController : MonoBehaviour
     }
 
     // Update is called once per frame
+
+
+    /* This can drag from anywhere */
     void Update()
     {
         if (Input.GetMouseButton(0))
         {
             origin = this.transform.position;
-            target = Camera.main.ScreenToWorldPoint(Input.mousePosition) - this.transform.position;
+            pivot = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+            target = pivot - new Vector2(origin.x, origin.y);
             float angle = Mathf.Atan2(target.y, target.x) * Mathf.Rad2Deg;
             Quaternion rotation = Quaternion.AngleAxis(angle, Vector3.forward);
             this.transform.rotation = rotation;
 
-            distance = Vector2.Distance(origin, target);
+            distance = Vector2.Distance(origin, pivot);
             distance = Mathf.Clamp(distance, 0, maxForce);
             Debug.DrawRay(origin, -target.normalized * distance);
-        }else
-        if (Input.GetMouseButtonUp(0)) {
+        }
+        else
+        if (Input.GetMouseButtonUp(0))
+        {
             rigid.velocity = -target.normalized * distance;
         }
     }
 
+    /* for mousedrag, its need to drag from the player */
+
     //private void OnMouseDrag()
     //{
+
     //    origin = this.transform.position;
-    //    target = Camera.main.ScreenToWorldPoint(Input.mousePosition) - this.transform.position;
+    //    pivot = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+    //    target = pivot - new Vector2(origin.x,origin.y); 
     //    float angle = Mathf.Atan2(target.y, target.x) * Mathf.Rad2Deg;
     //    Quaternion rotation = Quaternion.AngleAxis(angle, Vector3.forward);
     //    this.transform.rotation = rotation;
-        
-    //    distance = Vector2.Distance(origin, target);
+
+    //    distance = Vector2.Distance(origin, pivot);
     //    distance = Mathf.Clamp(distance, 0, maxForce);
     //    Debug.DrawRay(origin, -target.normalized * distance);
+        
     //}
     //private void OnMouseUp()
     //{
-    //    //rigid.AddForce(-target.normalized * distance * Force);
-    //    rigid.velocity = -target.normalized * distance;
+       
+    //    rigid.velocity =-target.normalized * distance;
+       
     //}
 }

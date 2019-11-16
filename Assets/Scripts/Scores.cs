@@ -4,8 +4,7 @@ using UnityEngine;
 
 public struct Scores{
 
-    public int Player;
-    public int Enemy;
+    public static int Player;
+    public static int Enemy;
 
-    
 }
