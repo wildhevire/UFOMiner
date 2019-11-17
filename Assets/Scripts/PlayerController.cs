@@ -60,12 +60,25 @@ public class PlayerController : MonoBehaviour
     //    distance = Vector2.Distance(origin, pivot);
     //    distance = Mathf.Clamp(distance, 0, maxForce);
     //    Debug.DrawRay(origin, -target.normalized * distance);
-        
+
     //}
     //private void OnMouseUp()
     //{
-       
+
     //    rigid.velocity =-target.normalized * distance;
-       
+
     //}
+
+
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        if (collision.tag == "PickUp")
+        {
+            Scores.Player += 1;
+            PickupsSpawner.pickUpCount -= 1;
+            Debug.Log("Player : "+Scores.Player);
+            collision.gameObject.tag = "Untagged";
+            Destroy(collision.gameObject);
+        }
+    }
 }
