@@ -13,7 +13,11 @@ public class PickupsSpawner : MonoBehaviour
 
     private void Awake()
     {
-        Spawn();
+
+        for (int i = 0; i < pickUpCount; i++)
+        {
+            SpawnRandom(pickup, this.transform);
+        }
     }
     // Start is called before the first frame update
     void Start()
@@ -24,8 +28,7 @@ public class PickupsSpawner : MonoBehaviour
     void Update()
     {
         if (pickUpCount < 20) {
-            Vector2 tmp = RandomPos();
-            Instantiate(pickup, new Vector3(tmp.x, tmp.y, 0), Quaternion.identity);
+            SpawnRandom(pickup, this.transform);
             pickUpCount += 1;
         }
     }
@@ -37,13 +40,11 @@ public class PickupsSpawner : MonoBehaviour
 
         return new Vector2(x, y);
     }
-    public void Spawn() {
+    public static void SpawnRandom(GameObject pickup, Transform parent) {
         
         
-        for (int i = 0; i < pickUpCount; i++)
-        {
             Vector2 tmp = RandomPos();
-            Instantiate(pickup, new Vector3(tmp.x, tmp.y, 0), Quaternion.identity);
-        }
+            Instantiate(pickup, new Vector3(tmp.x, tmp.y, 0), Quaternion.identity, parent);
+        
     }
 }

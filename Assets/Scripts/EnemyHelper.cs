@@ -6,48 +6,67 @@ using UnityEngine.UI;
 
 public class EnemyHelper : MonoBehaviour
 {
-    public float speed = 10;
+    
 
     Transform target;
 
-    Rigidbody2D rb;
+    Rigidbody2D rigid;
     TrailRenderer trail;
     
     public int number;
-    [SerializeField]GameObject prefab;
+    [SerializeField] GameObject scorePrefab;
+    [SerializeField] GameObject namePrefab;
     Text text;
+    Text nameText;
+
+    EnemySpawner es;
+    
     void Awake()
     {
-        rb = GetComponent<Rigidbody2D>();
+        rigid = GetComponent<Rigidbody2D>();
         trail = GetComponent<TrailRenderer>();
         trail.startColor = Color.red;
         trail.endColor = new Color(1, 0, 0, 0);
+        es = transform.parent.GetComponent<EnemySpawner>();
     }
     void Start()
     {
         number = transform.GetSiblingIndex();
-        //name = this.gameObject.name;
         target = FindTarget();
-        //Debug.Log();
-        text = Instantiate(prefab,new Vector3(150 * (number + 2) + 50,20) ,Quaternion.identity, FindObjectOfType<Canvas>().transform).transform.GetComponent<Text>();
+        text = Instantiate(scorePrefab, new Vector3(150, 30 * number + 50) ,Quaternion.identity, FindObjectOfType<Canvas>().transform).transform.GetComponent<Text>();
+        nameText = Instantiate(namePrefab, gameObject.transform.position, Quaternion.identity, FindObjectOfType<Canvas>().transform).transform.GetComponent<Text>();
+        nameText.fontSize = 16;
+        nameText.alignment = TextAnchor.MiddleCenter;
+        nameText.text = "Enemy" + (number + 1) ;
+
         text.text = "Enemy"+ (number+1) + " : "+ ScoresData.Enemy[number] + "  ";
+
     }
 
     void Update()
     {
         if (target != null)
         {
-            float maxForce = Random.Range(5, 10);
+            float maxForce = Random.Range(es.minForce, es.maxForce);
             Vector3 direction = (target.position - transform.position).normalized;
 
+            if(es.difficulty == EnemySpawner.Difficulties.Easy)
+            {
+                // Addforce turn enemy slow at moving around, which means easy mode
+                rigid.AddForce(direction * maxForce);
+            }
+            else if (es.difficulty == EnemySpawner.Difficulties.Hard)
+            {
+                // Velocity for hard mode, enemy can pick pickups easily 
+                rigid.velocity = direction * maxForce; 
+            }
 
-            // Velocity for hard mode, enemy can pick pickups easily 
-            // rb.velocity = direction * maxForce; 
 
-            // Addforce turn enemy slow at moving around, which means easy mode
-            rb.AddForce(direction * maxForce);
-            text.text = "Enemy" + number + " : " + ScoresData.Enemy[number];
+
         }
+        nameText.transform.position = new Vector3(Camera.main.WorldToScreenPoint(transform.position).x, Camera.main.WorldToScreenPoint(transform.position).y + 30) ;
+        text.text = "Enemy" + (number + 1) + " : " + ScoresData.Enemy[number];
+
     }
 
     private void OnTriggerEnter2D(Collider2D collision)
@@ -65,21 +84,21 @@ public class EnemyHelper : MonoBehaviour
 
     public Transform FindTarget()
     {
-        GameObject[] candidates = GameObject.FindGameObjectsWithTag("PickUp");
+        GameObject[] pickups = GameObject.FindGameObjectsWithTag("PickUp");
         float minDistance = Mathf.Infinity;
         Transform closest;
 
-       if (candidates.Length == 0)
+       if (pickups.Length == 0)
            return null;
 
-        closest = candidates[0].transform;
-        for (int i = 1; i < candidates.Length; ++i)
+        closest = pickups[0].transform;
+        for (int i = 1; i < pickups.Length; ++i)
         {
-            float distance = (candidates[i].transform.position - transform.position).sqrMagnitude;
+            float distance = (pickups[i].transform.position - transform.position).sqrMagnitude;
 
             if (distance < minDistance)
             {
-                closest = candidates[i].transform;
+                closest = pickups[i].transform;
                 minDistance = distance;
             }
         }

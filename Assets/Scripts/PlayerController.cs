@@ -1,33 +1,37 @@
 ﻿
-#define TAPONPLAYER //undefine or remove this for drag anywhere for control player
+#define TAPONPLAYER //undefine or remove this for drag anywhere to control player
 
 
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+using UnityEngine.UI;
 
 public class PlayerController : MonoBehaviour
 {
     Vector2 origin,target,pivot;
     float distance;
-    public float maxForce = 10;
+    public float maxForce = 100;
     Rigidbody2D rigid;
-
-    TrailRenderer myTrailRenderer;
     
+    TrailRenderer trail;
+  
+    [SerializeField]GameObject objText;
+    Text scoreText;
 
-    
-
+    [Header("Slow Motion When Aiming")]
+    public bool SlowMotion = true;
+    public float slowFactor = 0.05f;
     // Start is called before the first frame update
     void Start()
     {
         rigid = GetComponent<Rigidbody2D>();
-        myTrailRenderer = GetComponent<TrailRenderer>();
-        myTrailRenderer.startColor = new Color(0, 255, 247, 1);
-        myTrailRenderer.endColor = new Color(0, 255, 247, 0);
-
+        trail = GetComponent<TrailRenderer>();
+        trail.startColor = new Color(0, 255, 247, 1);
+        trail.endColor = new Color(0, 255, 247, 0);
+        scoreText = objText.GetComponent<Text>();
     }
+
 
     // Update is called once per frame
 
@@ -37,7 +41,13 @@ public class PlayerController : MonoBehaviour
 
     private void OnMouseDrag()
     {
+        if (SlowMotion)
+            {
 
+                Time.timeScale = slowFactor;
+                Time.fixedDeltaTime = Time.timeScale * 0.1f;
+
+            }
         origin = this.transform.position;
         pivot = Camera.main.ScreenToWorldPoint(Input.mousePosition);
         target = pivot - new Vector2(origin.x,origin.y); 
@@ -52,7 +62,11 @@ public class PlayerController : MonoBehaviour
     }
     private void OnMouseUp()
     {
+        if (SlowMotion)
+        {
+            Time.timeScale = 1;
 
+        }        
         rigid.velocity =-target.normalized * distance;
 
     }
@@ -60,7 +74,7 @@ public class PlayerController : MonoBehaviour
 
 
 
-   
+
 
 #else
 
@@ -69,6 +83,13 @@ public class PlayerController : MonoBehaviour
     {
         if (Input.GetMouseButton(0))
         {
+            if (SlowMotion)
+            {
+
+                Time.timeScale = slowFactor;
+                Time.fixedDeltaTime = Time.timeScale * 0.1f;
+
+            }
             origin = this.transform.position;
             pivot = Camera.main.ScreenToWorldPoint(Input.mousePosition);
             target = pivot - new Vector2(origin.x, origin.y);
@@ -83,6 +104,11 @@ public class PlayerController : MonoBehaviour
         else
         if (Input.GetMouseButtonUp(0))
         {
+            if (SlowMotion)
+            {
+                Time.timeScale = 1;
+
+            }
             rigid.velocity = -target.normalized * distance;
         }
     }
@@ -99,6 +125,7 @@ public class PlayerController : MonoBehaviour
             Debug.Log("Player : "+ScoresData.Player);
             collision.gameObject.tag = "Untagged";
             Destroy(collision.gameObject);
+            scoreText.text ="Player : " + ScoresData.Player;
         }
     }
 }
