@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 
 public class EnemyHelper : MonoBehaviour
@@ -10,17 +11,29 @@ public class EnemyHelper : MonoBehaviour
     Transform target;
 
     Rigidbody2D rb;
+    TrailRenderer trail;
+    
+    public int number;
+    [SerializeField]GameObject prefab;
+    Text text;
     void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
+        trail = GetComponent<TrailRenderer>();
+        trail.startColor = Color.red;
+        trail.endColor = new Color(1, 0, 0, 0);
     }
     void Start()
     {
+        number = transform.GetSiblingIndex();
+        //name = this.gameObject.name;
         target = FindTarget();
-        
+        //Debug.Log();
+        text = Instantiate(prefab,new Vector3(150 * (number + 2) + 50,20) ,Quaternion.identity, FindObjectOfType<Canvas>().transform).transform.GetComponent<Text>();
+        text.text = "Enemy"+ (number+1) + " : "+ ScoresData.Enemy[number] + "  ";
     }
 
-     void Update()
+    void Update()
     {
         if (target != null)
         {
@@ -33,6 +46,7 @@ public class EnemyHelper : MonoBehaviour
 
             // Addforce turn enemy slow at moving around, which means easy mode
             rb.AddForce(direction * maxForce);
+            text.text = "Enemy" + number + " : " + ScoresData.Enemy[number];
         }
     }
 
@@ -40,9 +54,9 @@ public class EnemyHelper : MonoBehaviour
     {
         if (collision.tag == "PickUp")
         {
-            Scores.Enemy += 1;
+            ScoresData.Enemy[number] += 1;
             PickupsSpawner.pickUpCount -= 1;
-            Debug.Log("Enemy : "+Scores.Enemy);
+            Debug.Log("Enemy"+number + " : "+ ScoresData.Enemy[number]);
             collision.gameObject.tag = "Untagged";
             Destroy(collision.gameObject);
             target = FindTarget();

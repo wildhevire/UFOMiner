@@ -2,9 +2,15 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public struct Scores{
-
+public struct ScoresData{
+   
     public static int Player;
-    public static int Enemy;
+    public static int[] Enemy= new int[EnemySpawner.enemyCount];
 
 }
+
+public class Scores : MonoBehaviour
+{
+
+}
+

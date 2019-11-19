@@ -14,14 +14,19 @@ public class PlayerController : MonoBehaviour
     public float maxForce = 10;
     Rigidbody2D rigid;
 
+    TrailRenderer myTrailRenderer;
+    
+
     
 
     // Start is called before the first frame update
     void Start()
     {
-
         rigid = GetComponent<Rigidbody2D>();
-        
+        myTrailRenderer = GetComponent<TrailRenderer>();
+        myTrailRenderer.startColor = new Color(0, 255, 247, 1);
+        myTrailRenderer.endColor = new Color(0, 255, 247, 0);
+
     }
 
     // Update is called once per frame
@@ -89,9 +94,9 @@ public class PlayerController : MonoBehaviour
     {
         if (collision.tag == "PickUp")
         {
-            Scores.Player += 1;
+            ScoresData.Player += 1;
             PickupsSpawner.pickUpCount -= 1;
-            Debug.Log("Player : "+Scores.Player);
+            Debug.Log("Player : "+ScoresData.Player);
             collision.gameObject.tag = "Untagged";
             Destroy(collision.gameObject);
         }

@@ -3,9 +3,9 @@ Simple game that i make for Codelabs
 
 # WIP
 - Basic Game mechanic -DONE
-- Score system
-- Enemy behaviour -DONE (but very too basic)
-- UI
+- Score system -DONE
+- Enemy behaviour -DONE (but too basic)
+- UI -DONE (just a text)
 - Main/Pause menu
 - Some polishing (
       Slowmo when aiming,
