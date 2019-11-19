@@ -26,8 +26,12 @@ public class EnemyHelper : MonoBehaviour
         {
             float maxForce = Random.Range(5, 10);
             Vector3 direction = (target.position - transform.position).normalized;
-            //rb.MovePosition(transform.position + direction * speed * Time.deltaTime);
-           // rb.velocity = direction * maxForce;
+
+
+            // Velocity for hard mode, enemy can pick pickups easily 
+            // rb.velocity = direction * maxForce; 
+
+            // Addforce turn enemy slow at moving around, which means easy mode
             rb.AddForce(direction * maxForce);
         }
     }

@@ -13,7 +13,7 @@ Simple game that i make for Codelabs
       Some extending mechanic which i decide later
 )
 
-#Credits
+# Credits
 - Unity Tech for sprites
 - OpenGameArt.org for background
 
