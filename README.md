@@ -1,5 +1,6 @@
 # UFOMiner
 Nano game that i make for Codelabs
+Play on wildhevire.github.io/UFOMiner
 
 # WIP
 - Basic Game mechanic -DONE
